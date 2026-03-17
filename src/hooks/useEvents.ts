@@ -26,6 +26,15 @@ export function useEvents() {
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const lastSavedHash = useRef('')
 
+  const makeHash = (state: { events: GrillEvent[]; templates: SavedTemplates; dismissedDebts: string[]; paypalUsername?: string }) => {
+    return JSON.stringify({
+      events: state.events,
+      templates: state.templates,
+      dismissedDebts: state.dismissedDebts,
+      paypalUsername: state.paypalUsername ?? '',
+    })
+  }
+
   // Initial load
   useEffect(() => {
     loadEvents().then((state) => {
@@ -42,7 +51,7 @@ export function useEvents() {
     if (!loaded || !isFirebaseEnabled()) return
     const unsubscribe = subscribeToFirestore(
       (state) => {
-        const hash = JSON.stringify(state)
+        const hash = makeHash(state)
         // Ignore if data is same as what we last saved
         if (hash === lastSavedHash.current) {
           setSyncStatus('connected')
@@ -68,7 +77,7 @@ export function useEvents() {
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
     saveTimeoutRef.current = setTimeout(async () => {
       const state = { events, templates, dismissedDebts, ...(paypalUsername ? { paypalUsername } : {}) }
-      const hash = JSON.stringify(state)
+      const hash = makeHash({ events, templates, dismissedDebts, paypalUsername })
       // Skip save if nothing changed
       if (hash === lastSavedHash.current) return
       lastSavedHash.current = hash
