@@ -34,14 +34,25 @@ export function isFirebaseEnabled(): boolean {
   return isConfigured && db !== null
 }
 
+function stripUndefined(obj: unknown): unknown {
+  if (obj === null || obj === undefined) return null
+  if (Array.isArray(obj)) return obj.map(stripUndefined)
+  if (typeof obj === 'object') {
+    const clean: Record<string, unknown> = {}
+    for (const [k, v] of Object.entries(obj as Record<string, unknown>)) {
+      if (v !== undefined) clean[k] = stripUndefined(v)
+    }
+    return clean
+  }
+  return obj
+}
+
 export async function saveToFirestore(state: EventsState): Promise<void> {
   if (!db) return
   console.log('[Firebase] Speichere Daten...')
   try {
-    await setDoc(doc(db, COLLECTION, DOC_ID), {
-      ...state,
-      updatedAt: Date.now(),
-    })
+    const cleanState = stripUndefined({ ...state, updatedAt: Date.now() }) as Record<string, unknown>
+    await setDoc(doc(db, COLLECTION, DOC_ID), cleanState)
     console.log('[Firebase] Gespeichert!')
   } catch (err) {
     console.error('[Firebase] Speichern fehlgeschlagen:', err)

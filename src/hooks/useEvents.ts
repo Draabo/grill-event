@@ -67,7 +67,7 @@ export function useEvents() {
     if (!loaded) return
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
     saveTimeoutRef.current = setTimeout(async () => {
-      const state = { events, templates, dismissedDebts, paypalUsername: paypalUsername || undefined }
+      const state = { events, templates, dismissedDebts, ...(paypalUsername ? { paypalUsername } : {}) }
       const hash = JSON.stringify(state)
       // Skip save if nothing changed
       if (hash === lastSavedHash.current) return
