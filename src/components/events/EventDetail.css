@@ -388,21 +388,20 @@
 }
 
 .erlassen-wrapper {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
 }
 
 .erlassen-link {
-  position: absolute;
-  right: 4px;
-  top: 50%;
-  transform: translateY(-50%);
   background: none;
   border: none;
   color: var(--text-secondary);
   cursor: pointer;
   font-size: 10px;
   font-style: italic;
-  padding: 2px 4px;
+  padding: 1px 4px;
   opacity: 0.5;
   transition: opacity 0.15s, color 0.15s;
 }
@@ -586,4 +585,5 @@ tr[draggable="true"]:active {
   .drag-handle {
     display: none;
   }
+
 }
