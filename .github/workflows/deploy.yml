@@ -24,7 +24,14 @@ jobs:
           node-version: 22
           cache: npm
 
-      - run: npm ci
+      - run: npm install
+
+      - name: Print npm log if exist
+        if: failure()
+        run: |
+          if [ -f /home/runner/.npm/_logs/*-debug-0.log ]; then
+            cat /home/runner/.npm/_logs/*-debug-0.log
+          fi
 
       - run: npx vite build
         env:
