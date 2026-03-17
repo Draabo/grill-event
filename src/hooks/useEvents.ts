@@ -78,7 +78,8 @@ export function useEvents() {
         try {
           await saveToFirestore(state)
           setSyncStatus('connected')
-        } catch {
+        } catch (err) {
+          console.error('[Sync] Save failed:', err)
           setSyncStatus('error')
         }
       }

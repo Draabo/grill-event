@@ -37,11 +37,16 @@ export function isFirebaseEnabled(): boolean {
 export async function saveToFirestore(state: EventsState): Promise<void> {
   if (!db) return
   console.log('[Firebase] Speichere Daten...')
-  await setDoc(doc(db, COLLECTION, DOC_ID), {
-    ...state,
-    updatedAt: Date.now(),
-  })
-  console.log('[Firebase] Gespeichert!')
+  try {
+    await setDoc(doc(db, COLLECTION, DOC_ID), {
+      ...state,
+      updatedAt: Date.now(),
+    })
+    console.log('[Firebase] Gespeichert!')
+  } catch (err) {
+    console.error('[Firebase] Speichern fehlgeschlagen:', err)
+    throw err
+  }
 }
 
 export function subscribeToFirestore(
