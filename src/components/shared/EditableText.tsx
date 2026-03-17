@@ -9,6 +9,8 @@ interface EditableTextProps {
   placeholder?: string
 }
 
+const isTouchDevice = () => 'ontouchstart' in window
+
 export function EditableText({
   value,
   onSave,
@@ -23,8 +25,11 @@ export function EditableText({
 
   useEffect(() => {
     if (editing) {
-      inputRef.current?.focus()
-      inputRef.current?.select()
+      // Small delay for iOS to properly show keyboard
+      setTimeout(() => {
+        inputRef.current?.focus()
+        inputRef.current?.select()
+      }, 50)
     }
   }, [editing])
 
@@ -72,8 +77,9 @@ export function EditableText({
   return (
     <span
       className={className}
-      onDoubleClick={startEdit}
-      title="Doppelklick zum Bearbeiten"
+      onClick={isTouchDevice() ? startEdit : undefined}
+      onDoubleClick={!isTouchDevice() ? startEdit : undefined}
+      title={isTouchDevice() ? 'Tippen zum Bearbeiten' : 'Doppelklick zum Bearbeiten'}
       style={{ cursor: 'text' }}
     >
       {value}

@@ -1,7 +1,6 @@
 import { memo, useState, useMemo } from 'react'
 import { GrillEvent, GrillItem } from '../../types'
 import { formatDateGerman, formatCurrency } from '../../utils/format'
-import { getItemEmoji } from '../../utils/emoji'
 import { PayPalModal } from '../shared/PayPalModal'
 import './Overview.css'
 
@@ -142,18 +141,7 @@ export const Overview = memo(function Overview({
     }
     const totalDebt = [...debtMap.values()].reduce((s, v) => s + v, 0)
 
-    const itemCountMap = new Map<string, number>()
-    for (const ev of events) {
-      for (const order of ev.orders ?? []) {
-        const item = (ev.items ?? []).find((i) => i.id === order.itemId)
-        if (item) {
-          itemCountMap.set(item.name, (itemCountMap.get(item.name) ?? 0) + order.quantity)
-        }
-      }
-    }
-    const allItems = [...itemCountMap.entries()].sort((a, b) => b[1] - a[1])
-
-    return { totalCostsAll, totalMyCosts, totalDebt, debtMap, allItems }
+    return { totalCostsAll, totalMyCosts, totalDebt, debtMap }
   }, [events])
 
   const visibleDebt = [...stats.debtMap.entries()]
@@ -232,47 +220,37 @@ export const Overview = memo(function Overview({
         </form>
       )}
 
-      {/* Hero Stats */}
-      {stats.totalCostsAll > 0 && (
-        <div className="hero-stats">
-          <div className="hero-stat">
-            <span className="hero-stat-value">{formatCurrency(stats.totalCostsAll)}</span>
-            <span className="hero-stat-label">Gesamtkosten</span>
-          </div>
-          <div className="hero-stat-divider" />
-          <div className="hero-stat">
-            <span className="hero-stat-value">{formatCurrency(stats.totalMyCosts)}</span>
-            <span className="hero-stat-label">Meine Kosten</span>
-          </div>
-          {visibleDebt > 0 && (
-            <>
-              <div className="hero-stat-divider" />
-              <div className="hero-stat">
-                <span className="hero-stat-value negative">{formatCurrency(visibleDebt)}</span>
-                <span className="hero-stat-label">Offene Schulden</span>
+      {/* Dashboard */}
+      {stats.totalCostsAll > 0 && (() => {
+        const visibleDebts = [...stats.debtMap.entries()]
+          .filter(([name]) => !dismissedDebts.includes(name))
+          .sort((a, b) => b[1] - a[1])
+
+        return (
+          <div className="dashboard">
+            <div className="stats-row">
+              <div className="stat-card">
+                <span className="stat-card-label">Gesamtkosten</span>
+                <span className="stat-card-value">{formatCurrency(stats.totalCostsAll)}</span>
               </div>
-            </>
-          )}
-        </div>
-      )}
-
-      {/* Detail Cards */}
-      {(stats.debtMap.size > 0 || stats.allItems.length > 0) && (
-        <div className="detail-row">
-          {stats.debtMap.size > 0 && (() => {
-            const visible = [...stats.debtMap.entries()]
-              .filter(([name]) => !dismissedDebts.includes(name))
-              .sort((a, b) => b[1] - a[1])
-
-            return visible.length > 0 ? (
-              <div className="detail-card">
-                <div className="detail-card-header">
-                  <h3>Offene Schulden</h3>
+              <div className="stat-card">
+                <span className="stat-card-label">Meine Kosten</span>
+                <span className="stat-card-value accent">{formatCurrency(stats.totalMyCosts)}</span>
+              </div>
+              {visibleDebt > 0 && (
+                <div className="stat-card">
+                  <span className="stat-card-label">Offene Schulden</span>
+                  <span className="stat-card-value negative">{formatCurrency(visibleDebt)}</span>
                 </div>
-                <div className="detail-card-body">
-                  {visible.map(([personName, debt]) => (
-                    <div key={personName} className="detail-list-item">
-                      <span className="detail-list-name">
+              )}
+            </div>
+
+            {visibleDebts.length > 0 && (
+              <div className="debt-list">
+                <div className="debt-list-header">Offene Schulden</div>
+                  {visibleDebts.map(([personName, debt]) => (
+                    <div key={personName} className="debt-row">
+                      <span className="debt-person">
                         <span
                           className="avatar avatar-clickable"
                           style={{ background: getAvatarColor(personName) }}
@@ -283,8 +261,8 @@ export const Overview = memo(function Overview({
                         </span>
                         {personName}
                       </span>
-                      <span className="detail-list-right">
-                        <span className="negative">{formatCurrency(debt)}</span>
+                      <span className="debt-actions">
+                        <span className="negative debt-amount">{formatCurrency(debt)}</span>
                         {paypalUsername && (
                           <button
                             className="debt-paypal-btn"
@@ -312,38 +290,10 @@ export const Overview = memo(function Overview({
                     </div>
                   ))}
                 </div>
-              </div>
-            ) : null
-          })()}
-
-          {stats.allItems.length > 0 && (
-            <div className="detail-card">
-              <div className="detail-card-header">
-                <h3>Alle Artikel</h3>
-                <span className="detail-card-badge">
-                  {stats.allItems.reduce((s, [, c]) => s + c, 0)} gesamt
-                </span>
-              </div>
-              <div className="detail-card-body">
-                {stats.allItems.map(([itemName, count]) => (
-                  <div key={itemName} className="detail-list-item">
-                    <span className="detail-list-name">{getItemEmoji(itemName)} {itemName}</span>
-                    <div className="item-bar-wrapper">
-                      <div
-                        className="item-bar"
-                        style={{
-                          width: `${(count / stats.allItems[0][1]) * 100}%`,
-                        }}
-                      />
-                      <span className="item-bar-count">{count}x</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+            )}
+          </div>
+        )
+      })()}
 
       {/* Events */}
       {sortedEvents.length === 0 ? (

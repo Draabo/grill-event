@@ -11,18 +11,18 @@ interface CurrencyInputProps {
 }
 
 export function CurrencyInput({ value, onChange, className, placeholder, erlassen, onErlassen }: CurrencyInputProps) {
-  const [editing, setEditing] = useState(false)
+  const [focused, setFocused] = useState(false)
   const [rawValue, setRawValue] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleFocus = useCallback(() => {
-    setEditing(true)
+    setFocused(true)
     setRawValue(value ? String(value) : '')
   }, [value])
 
   const handleBlur = useCallback(() => {
-    setEditing(false)
-    const parsed = parseFloat(rawValue) || 0
+    setFocused(false)
+    const parsed = parseFloat(rawValue.replace(',', '.')) || 0
     onChange(parsed)
   }, [rawValue, onChange])
 
@@ -41,31 +41,18 @@ export function CurrencyInput({ value, onChange, className, placeholder, erlasse
     }
   }, [])
 
-  if (editing) {
-    return (
-      <input
-        ref={inputRef}
-        type="text"
-        inputMode="decimal"
-        value={rawValue}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        onKeyDown={handleKeyDown}
-        className={className}
-        placeholder={placeholder}
-        autoFocus
-      />
-    )
-  }
-
   if (!value && erlassen && onErlassen) {
     return (
       <div className="erlassen-wrapper">
         <input
+          ref={inputRef}
           type="text"
-          value=""
+          inputMode="decimal"
+          value={focused ? rawValue : ''}
+          onChange={handleChange}
           onFocus={handleFocus}
-          readOnly
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
           className={className}
           placeholder={placeholder}
         />
@@ -78,10 +65,14 @@ export function CurrencyInput({ value, onChange, className, placeholder, erlasse
 
   return (
     <input
+      ref={inputRef}
       type="text"
-      value={value ? formatCurrency(value) : ''}
+      inputMode="decimal"
+      value={focused ? rawValue : (value ? formatCurrency(value) : '')}
+      onChange={handleChange}
       onFocus={handleFocus}
-      readOnly
+      onBlur={handleBlur}
+      onKeyDown={handleKeyDown}
       className={className}
       placeholder={placeholder}
     />
