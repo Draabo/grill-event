@@ -48,7 +48,8 @@ export function useEvents() {
         setDismissedDebts(state.dismissedDebts ?? [])
         setPaypalUsername(state.paypalUsername ?? '')
         setSyncStatus('connected')
-        setTimeout(() => { isRemoteUpdate.current = false }, 100)
+        // Wait longer for React to process all state updates before allowing saves again
+        setTimeout(() => { isRemoteUpdate.current = false }, 500)
       },
       () => {
         setSyncStatus('error')
@@ -60,9 +61,10 @@ export function useEvents() {
   // Save on changes (local + Firestore)
   useEffect(() => {
     if (!loaded) return
-    if (isRemoteUpdate.current) return
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
     saveTimeoutRef.current = setTimeout(async () => {
+      // Skip save if this change came from Firestore
+      if (isRemoteUpdate.current) return
       const state = { events, templates, dismissedDebts, paypalUsername: paypalUsername || undefined }
       saveEvents(state)
       if (isFirebaseEnabled()) {
