@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2a2020"/>
+      <stop offset="100%" style="stop-color:#1a1a1a"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff8c42"/>
+      <stop offset="100%" style="stop-color:#e05a00"/>
+    </linearGradient>
+    <linearGradient id="coal" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b35"/>
+      <stop offset="100%" style="stop-color:#cc3300"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect width="512" height="512" rx="100" fill="url(#bg)"/>
+
+  <!-- Fire/glow behind grill -->
+  <ellipse cx="256" cy="320" rx="120" ry="30" fill="#ff8c42" opacity="0.15"/>
+
+  <!-- Grill bowl -->
+  <path d="M120 260 Q120 340 256 340 Q392 340 392 260 Z" fill="#333" stroke="#444" stroke-width="3"/>
+
+  <!-- Grill grate lines -->
+  <line x1="145" y1="258" x2="367" y2="258" stroke="#555" stroke-width="4" stroke-linecap="round"/>
+  <line x1="140" y1="272" x2="372" y2="272" stroke="#555" stroke-width="4" stroke-linecap="round"/>
+  <line x1="145" y1="286" x2="367" y2="286" stroke="#555" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Grill legs -->
+  <line x1="170" y1="340" x2="155" y2="410" stroke="#444" stroke-width="6" stroke-linecap="round"/>
+  <line x1="342" y1="340" x2="357" y2="410" stroke="#444" stroke-width="6" stroke-linecap="round"/>
+  <line x1="155" y1="410" x2="357" y2="410" stroke="#444" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Flames -->
+  <path d="M190 255 Q185 220 200 195 Q205 215 210 200 Q215 230 210 255" fill="url(#coal)" opacity="0.9"/>
+  <path d="M240 252 Q230 200 250 170 Q255 200 265 185 Q270 220 260 252" fill="url(#glow)" opacity="0.95"/>
+  <path d="M300 255 Q295 215 310 190 Q315 210 320 198 Q325 228 315 255" fill="url(#coal)" opacity="0.9"/>
+
+  <!-- Smoke wisps -->
+  <path d="M210 170 Q200 140 215 110 Q220 130 225 115 Q230 145 220 170" fill="none" stroke="#888" stroke-width="3" opacity="0.3" stroke-linecap="round"/>
+  <path d="M270 155 Q265 120 280 90 Q282 115 290 100 Q292 135 280 155" fill="none" stroke="#888" stroke-width="3" opacity="0.25" stroke-linecap="round"/>
+
+  <!-- Food items on grill -->
+  <!-- Sausage 1 -->
+  <rect x="165" y="248" width="60" height="14" rx="7" fill="#c0703a" transform="rotate(-5 195 255)"/>
+  <!-- Sausage 2 -->
+  <rect x="280" y="250" width="55" height="14" rx="7" fill="#b5653a" transform="rotate(3 307 257)"/>
+  <!-- Steak -->
+  <ellipse cx="256" cy="268" rx="28" ry="12" fill="#8b4513" transform="rotate(-8 256 268)"/>
+  <path d="M238 265 Q248 262 258 265 Q268 268 275 265" fill="none" stroke="#6b3410" stroke-width="2"/>
+
+  <!-- Spatula -->
+  <line x1="380" y1="200" x2="420" y2="140" stroke="#888" stroke-width="5" stroke-linecap="round"/>
+  <rect x="410" y="120" width="30" height="22" rx="4" fill="#666" transform="rotate(-40 425 131)"/>
+</svg>
