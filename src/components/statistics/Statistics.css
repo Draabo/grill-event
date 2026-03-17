@@ -1,0 +1,316 @@
+.statistics {
+  padding: 24px;
+  margin: 0 auto;
+}
+
+.statistics-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.statistics-header .btn-secondary {
+  border-radius: 10px;
+  padding: 8px 16px;
+}
+
+.statistics-header h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 22px;
+}
+
+/* Price Charts Grid */
+.price-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.price-chart-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  transition: border-color 0.15s;
+}
+
+.price-chart-card:hover {
+  border-color: rgba(255, 140, 66, 0.3);
+}
+
+.price-chart-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.price-chart-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.price-chart-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.price-chart-trend {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+.price-chart-trend.trend-up {
+  color: var(--danger);
+  background: rgba(231, 76, 60, 0.1);
+}
+
+.price-chart-trend.trend-down {
+  color: var(--success);
+  background: rgba(46, 204, 113, 0.1);
+}
+
+.price-chart-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.chart-label {
+  font-size: 9px;
+  fill: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.chart-label-date {
+  font-size: 8px;
+  fill: var(--text-secondary);
+}
+
+.price-chart-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.price-chart-current {
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Tall card body for stats view */
+.detail-card-body-tall {
+  max-height: 400px;
+}
+
+/* Stat items & bars */
+.stat-item {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.stat-item-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.stat-item-name {
+  font-size: 14px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.stat-item-date {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.stat-bar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stat-bar-track {
+  flex: 1;
+  height: 8px;
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.stat-bar-total {
+  background: rgba(255, 140, 66, 0.3);
+}
+
+.stat-bar-mine {
+  background: var(--accent);
+}
+
+.stat-bar-value {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  min-width: 70px;
+  text-align: right;
+}
+
+.stat-legend {
+  display: flex;
+  gap: 16px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+}
+
+.stat-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.stat-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.stat-dot-total {
+  background: rgba(255, 140, 66, 0.3);
+}
+
+.stat-dot-mine {
+  background: var(--accent);
+}
+
+.stat-rank {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+/* Season Review */
+.season-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.season-card {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, #2a2520 100%);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  transition: border-color 0.15s;
+}
+
+.season-card:hover {
+  border-color: rgba(255, 140, 66, 0.3);
+}
+
+.season-year {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 16px;
+  letter-spacing: -1px;
+}
+
+.season-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.season-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.season-stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.season-stat-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.season-costs {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.season-cost-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.season-cost-value {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.season-cost-accent {
+  color: var(--accent);
+}
+
+.season-highlight {
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.season-highlight strong {
+  color: var(--accent);
+}
