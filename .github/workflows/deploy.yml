@@ -24,7 +24,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - run: npm install --no-optional
+      - run: npm ci
 
       - run: npx vite build
         env:
