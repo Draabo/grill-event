@@ -2,6 +2,7 @@ import { EventsState } from '../types'
 
 const STORAGE_KEY = 'grill-events'
 const API_ENDPOINT = '/api/events'
+const isDev = import.meta.env.DEV
 
 function isElectron(): boolean {
   return !!window.electronAPI
@@ -16,13 +17,15 @@ export async function loadEvents(): Promise<EventsState> {
     }
   }
 
-  try {
-    const res = await fetch(API_ENDPOINT)
-    if (res.ok) {
-      return await res.json()
+  if (isDev) {
+    try {
+      const res = await fetch(API_ENDPOINT)
+      if (res.ok) {
+        return await res.json()
+      }
+    } catch {
+      // Dev server not available
     }
-  } catch {
-    // Dev server not available, fall back to localStorage
   }
 
   try {
@@ -45,14 +48,16 @@ export async function saveEvents(state: EventsState): Promise<void> {
     }
   }
 
-  try {
-    await fetch(API_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(state),
-    })
-  } catch {
-    // Dev server not available
+  if (isDev) {
+    try {
+      await fetch(API_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(state),
+      })
+    } catch {
+      // Dev server not available
+    }
   }
 
   try {
