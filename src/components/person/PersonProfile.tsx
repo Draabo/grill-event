@@ -128,7 +128,7 @@ export const PersonProfile = memo(function PersonProfile({
     <div className="person-profile">
       <div className="person-profile-header">
         <button className="btn btn-secondary" onClick={onBack}>
-          Zurueck
+          Zurück
         </button>
         <div className="person-profile-identity">
           <span

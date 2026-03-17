@@ -238,7 +238,7 @@ export const EventDetail = memo(function EventDetail({
     <div className="event-detail">
       <div className="event-detail-header">
         <button className="btn btn-secondary" onClick={onBack}>
-          Zurueck
+          Zurück
         </button>
         <div className="event-detail-title">
           <h2>
@@ -341,7 +341,7 @@ export const EventDetail = memo(function EventDetail({
             <button
               className="btn btn-secondary btn-sm"
               onClick={onAutoCharge}
-              title="Setzt 'verlangt' auf eig. Kosten aufgerundet auf 0,50 EUR"
+              title="Setzt 'verlangt' auf eig. Kosten aufgerundet auf 0,50 €"
             >
               Auto-Abrechnung
             </button>
@@ -408,7 +408,7 @@ export const EventDetail = memo(function EventDetail({
                           value={item.totalPrice}
                           onChange={(v) => onSetItemTotalPrice(item.id, v)}
                           className="cell-input price-input"
-                          placeholder="0,00 EUR"
+                          placeholder="0,00 €"
                         />
                       </td>
                     ))}
@@ -530,7 +530,7 @@ export const EventDetail = memo(function EventDetail({
                                   onUpdateBilling(person.id, { charged: v })
                                 }
                                 className="cell-input price-input"
-                                placeholder="0,00 EUR"
+                                placeholder="0,00 €"
                               />
                             </td>
                             <td>
@@ -551,7 +551,7 @@ export const EventDetail = memo(function EventDetail({
                                     onUpdateBilling(person.id, { received: v })
                                   }
                                   className="cell-input price-input"
-                                  placeholder="0,00 EUR"
+                                  placeholder="0,00 €"
                                   erlassen={billing.charged > 0 && billing.received === 0}
                                   onErlassen={() =>
                                     onUpdateBilling(person.id, { note: 'erlassen' })
@@ -623,7 +623,7 @@ export const EventDetail = memo(function EventDetail({
                   </strong>
                 </div>
                 <div className="summary-row">
-                  <span>Meine Kosten (was uebrig bleibt):</span>
+                  <span>Meine Kosten (was übrig bleibt):</span>
                   <strong>{formatCurrency(myCost)}</strong>
                 </div>
               </>

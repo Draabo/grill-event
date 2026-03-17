@@ -385,10 +385,7 @@ export function useEvents() {
   }, [])
 
   const dismissDebt = useCallback((personName: string) => {
-    setDismissedDebts((prev) =>
-      prev.includes(personName) ? prev : [...prev, personName]
-    )
-    // Set note: 'erlassen' on all billing entries for this person across all events
+    // Set note: 'erlassen' on all CURRENT open billing entries for this person
     setEvents((prev) =>
       prev.map((e) => {
         const person = e.persons.find((p) => p.name === personName)

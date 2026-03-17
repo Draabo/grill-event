@@ -117,7 +117,6 @@ function App() {
             onDuplicateEvent={duplicateEvent}
             onShowStatistics={handleShowStatistics}
             onSelectPerson={handleSelectPerson}
-            dismissedDebts={dismissedDebts}
             onDismissDebt={dismissDebt}
             onMarkPersonPaid={markPersonPaid}
             paypalUsername={paypalUsername}

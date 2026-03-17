@@ -37,7 +37,7 @@ export function PayPalModal({ personName, amount, paypalUsername, onClose }: Pay
         </div>
         <div className="paypal-modal-body">
           <p className="paypal-modal-info">
-            <strong>{personName}</strong> schuldet <strong>{amount.toFixed(2)} EUR</strong>
+            <strong>{personName}</strong> schuldet <strong>{amount.toFixed(2)} €</strong>
           </p>
           <div className="paypal-modal-qr">
             <img src={qrUrl} alt="PayPal QR Code" width={180} height={180} />

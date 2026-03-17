@@ -215,7 +215,7 @@ export const Statistics = memo(function Statistics({ events, onBack, onSelectPer
     <div className="statistics">
       <div className="statistics-header">
         <button className="btn btn-secondary" onClick={onBack}>
-          Zurueck
+          Zurück
         </button>
         <h2>Statistiken</h2>
       </div>

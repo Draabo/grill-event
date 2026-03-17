@@ -12,7 +12,6 @@ interface OverviewProps {
   onDuplicateEvent: (eventId: string) => void
   onShowStatistics: () => void
   onSelectPerson: (name: string) => void
-  dismissedDebts: string[]
   onDismissDebt: (personName: string) => void
   onMarkPersonPaid: (personName: string) => void
   paypalUsername: string
@@ -83,7 +82,6 @@ export const Overview = memo(function Overview({
   onDuplicateEvent,
   onShowStatistics,
   onSelectPerson,
-  dismissedDebts,
   onDismissDebt,
   onMarkPersonPaid,
   paypalUsername,
@@ -144,9 +142,7 @@ export const Overview = memo(function Overview({
     return { totalCostsAll, totalMyCosts, totalDebt, debtMap }
   }, [events])
 
-  const visibleDebt = [...stats.debtMap.entries()]
-    .filter(([name]) => !dismissedDebts.includes(name))
-    .reduce((sum, [, v]) => sum + v, 0)
+  const visibleDebt = [...stats.debtMap.values()].reduce((sum, v) => sum + v, 0)
 
   return (
     <div className="overview">
@@ -223,7 +219,6 @@ export const Overview = memo(function Overview({
       {/* Dashboard */}
       {stats.totalCostsAll > 0 && (() => {
         const visibleDebts = [...stats.debtMap.entries()]
-          .filter(([name]) => !dismissedDebts.includes(name))
           .sort((a, b) => b[1] - a[1])
 
         return (
