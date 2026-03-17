@@ -19,18 +19,16 @@ function migrateEvents(events: GrillEvent[]): GrillEvent[] {
 export function useEvents() {
   const [events, setEvents] = useState<GrillEvent[]>([])
   const [templates, setTemplates] = useState<SavedTemplates>(DEFAULT_TEMPLATES)
-  const [dismissedDebts, setDismissedDebts] = useState<string[]>([])
   const [paypalUsername, setPaypalUsername] = useState('')
   const [loaded, setLoaded] = useState(false)
   const [syncStatus, setSyncStatus] = useState<'off' | 'connected' | 'syncing' | 'error'>('off')
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const lastSavedHash = useRef('')
 
-  const makeHash = (state: { events: GrillEvent[]; templates: SavedTemplates; dismissedDebts: string[]; paypalUsername?: string }) => {
+  const makeHash = (state: { events: GrillEvent[]; templates: SavedTemplates; paypalUsername?: string }) => {
     return JSON.stringify({
       events: state.events,
       templates: state.templates,
-      dismissedDebts: state.dismissedDebts,
       paypalUsername: state.paypalUsername ?? '',
     })
   }
@@ -40,7 +38,6 @@ export function useEvents() {
     loadEvents().then((state) => {
       setEvents(migrateEvents(state.events ?? []))
       setTemplates(state.templates ?? DEFAULT_TEMPLATES)
-      setDismissedDebts(state.dismissedDebts ?? [])
       setPaypalUsername(state.paypalUsername ?? '')
       setLoaded(true)
     })
@@ -60,7 +57,6 @@ export function useEvents() {
         lastSavedHash.current = hash
         setEvents(migrateEvents(state.events ?? []))
         setTemplates(state.templates ?? DEFAULT_TEMPLATES)
-        setDismissedDebts(state.dismissedDebts ?? [])
         setPaypalUsername(state.paypalUsername ?? '')
         setSyncStatus('connected')
       },
@@ -76,8 +72,8 @@ export function useEvents() {
     if (!loaded) return
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
     saveTimeoutRef.current = setTimeout(async () => {
-      const state = { events, templates, dismissedDebts, ...(paypalUsername ? { paypalUsername } : {}) }
-      const hash = makeHash({ events, templates, dismissedDebts, paypalUsername })
+      const state = { events, templates, ...(paypalUsername ? { paypalUsername } : {}) }
+      const hash = makeHash({ events, templates, paypalUsername })
       // Skip save if nothing changed
       if (hash === lastSavedHash.current) return
       lastSavedHash.current = hash
@@ -96,7 +92,7 @@ export function useEvents() {
     return () => {
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
     }
-  }, [events, templates, dismissedDebts, paypalUsername, loaded])
+  }, [events, templates, paypalUsername, loaded])
 
   // --- Templates ---
 
@@ -333,15 +329,6 @@ export function useEvents() {
   const updateBilling = useCallback(
     (eventId: string, personId: string, updates: Partial<PersonBilling>) => {
       setEvents((prev) => {
-        // If note is being removed, restore person in dismissedDebts
-        if ('note' in updates && !updates.note) {
-          const event = prev.find((e) => e.id === eventId)
-          const person = event?.persons.find((p) => p.id === personId)
-          if (person) {
-            setDismissedDebts((d) => d.filter((n) => n !== person.name))
-          }
-        }
-
         return prev.map((e) => {
           if (e.id !== eventId) return e
           const existing = e.billing.find((b) => b.personId === personId)
@@ -434,7 +421,6 @@ export function useEvents() {
   return {
     events,
     templates,
-    dismissedDebts,
     paypalUsername,
     setPaypalUsername,
     syncStatus,

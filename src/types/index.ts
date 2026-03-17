@@ -40,7 +40,6 @@ export interface SavedTemplates {
 export interface EventsState {
   events: GrillEvent[]
   templates: SavedTemplates
-  dismissedDebts: string[]
   paypalUsername?: string
 }
 

@@ -29,7 +29,6 @@ function App() {
     setItemTotalPrice,
     setOrderQuantity,
     updateBilling,
-    dismissedDebts,
     dismissDebt,
     markPersonPaid,
     autoCharge,

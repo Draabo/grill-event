@@ -151,13 +151,6 @@
   color: var(--text-primary);
 }
 
-.detail-list-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-variant-numeric: tabular-nums;
-}
-
 .debt-paid-btn {
   background: none;
   border: 1px solid var(--border);
@@ -190,45 +183,6 @@
   border-color: var(--danger);
 }
 
-.dismissed-section {
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid var(--border);
-}
-
-.dismissed-label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-secondary);
-  margin-bottom: 4px;
-  opacity: 0.6;
-}
-
-.detail-list-item.dismissed {
-  opacity: 0.5;
-}
-
-.dismissed-amount {
-  color: var(--text-secondary);
-  text-decoration: line-through;
-}
-
-.debt-restore-btn {
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  font-size: 11px;
-  padding: 2px 6px;
-  transition: color 0.15s, border-color 0.15s;
-}
-
-.debt-restore-btn:hover {
-  color: var(--accent);
-  border-color: var(--accent);
-}
 
 /* Item bar chart */
 .item-bar-wrapper {
