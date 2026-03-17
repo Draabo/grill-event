@@ -474,3 +474,62 @@
 .empty-state p {
   margin: 4px 0;
 }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .overview {
+    padding: 16px;
+  }
+
+  .overview-header {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .overview-header-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .hero-stats {
+    flex-wrap: wrap;
+    padding: 16px;
+    gap: 4px;
+    border-radius: 12px;
+  }
+
+  .hero-stat {
+    min-width: 40%;
+    padding: 6px 0;
+  }
+
+  .hero-stat-value {
+    font-size: 20px;
+  }
+
+  .hero-stat-divider {
+    display: none;
+  }
+
+  .detail-row {
+    grid-template-columns: 1fr;
+  }
+
+  .event-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .event-form {
+    flex-direction: column;
+  }
+
+  .paypal-settings-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .item-bar-wrapper {
+    width: 100px;
+  }
+}

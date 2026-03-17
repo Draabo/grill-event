@@ -506,3 +506,84 @@ tr[draggable="true"] {
 tr[draggable="true"]:active {
   cursor: grabbing;
 }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .event-detail {
+    padding: 16px;
+  }
+
+  .event-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .event-detail-title {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .event-detail-title h2 {
+    font-size: 18px;
+  }
+
+  .add-section {
+    padding: 10px 14px;
+  }
+
+  .inline-form {
+    flex-direction: column;
+  }
+
+  .inline-form input {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .toggle-orders-wrapper {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .grill-table th,
+  .grill-table td {
+    padding: 8px 8px;
+    font-size: 13px;
+  }
+
+  .sticky-col {
+    min-width: 90px;
+  }
+
+  .cell-input {
+    width: 50px;
+    padding: 5px 4px;
+    font-size: 13px;
+  }
+
+  .price-input {
+    width: 60px;
+  }
+
+  .qty-input {
+    width: 44px;
+  }
+
+  .summary-box {
+    padding: 14px 16px;
+  }
+
+  .summary-row {
+    font-size: 13px;
+  }
+
+  .editable-input-title {
+    font-size: 18px;
+    width: 180px;
+  }
+
+  .drag-handle {
+    display: none;
+  }
+}

@@ -314,3 +314,56 @@
 .season-highlight strong {
   color: var(--accent);
 }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .statistics {
+    padding: 16px;
+  }
+
+  .statistics-header h2 {
+    font-size: 18px;
+  }
+
+  .hero-stats {
+    flex-wrap: wrap;
+    padding: 16px;
+  }
+
+  .hero-stat {
+    min-width: 40%;
+    padding: 6px 0;
+  }
+
+  .hero-stat-value {
+    font-size: 20px;
+  }
+
+  .hero-stat-divider {
+    display: none;
+  }
+
+  .detail-row {
+    grid-template-columns: 1fr;
+  }
+
+  .price-charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .season-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .season-year {
+    font-size: 26px;
+  }
+
+  .season-stat-value {
+    font-size: 18px;
+  }
+
+  .item-bar-wrapper {
+    width: 100px;
+  }
+}

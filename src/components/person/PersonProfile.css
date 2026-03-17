@@ -114,3 +114,55 @@
   padding-top: 8px;
   border-top: 1px solid var(--border);
 }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .person-profile {
+    padding: 16px;
+  }
+
+  .person-profile-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .person-profile-identity h2 {
+    font-size: 18px;
+  }
+
+  .hero-stats {
+    flex-wrap: wrap;
+    padding: 16px;
+  }
+
+  .hero-stat {
+    min-width: 40%;
+    padding: 6px 0;
+  }
+
+  .hero-stat-value {
+    font-size: 20px;
+  }
+
+  .hero-stat-divider {
+    display: none;
+  }
+
+  .detail-row {
+    grid-template-columns: 1fr;
+  }
+
+  .item-bar-wrapper {
+    width: 100px;
+  }
+
+  .person-event-top {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .person-event-cost {
+    font-size: 14px;
+  }
+}

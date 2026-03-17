@@ -332,3 +332,20 @@ body {
   transform: scale(1.15);
   box-shadow: 0 0 0 2px var(--accent);
 }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .app-header {
+    padding: 10px 16px;
+  }
+
+  .btn {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  .btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}
