@@ -35,7 +35,7 @@ export async function loadEvents(): Promise<EventsState> {
     // localStorage not available
   }
 
-  return { events: [], templates: { persons: [], items: [] }, dismissedDebts: [] }
+  return { events: [], templates: { persons: [], items: [] } }
 }
 
 export async function saveEvents(state: EventsState): Promise<void> {

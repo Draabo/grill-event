@@ -71,8 +71,12 @@ export function subscribeToFirestore(
     (snap) => {
       if (snap.exists()) {
         console.log('[Firebase] Daten empfangen')
-        const data = snap.data() as EventsState & { updatedAt?: number }
-        const { updatedAt: _, ...state } = data
+        const data = snap.data()
+        const state: EventsState = {
+          events: data.events ?? [],
+          templates: data.templates ?? { persons: [], items: [] },
+          paypalUsername: data.paypalUsername,
+        }
         onData(state)
       } else {
         console.log('[Firebase] Dokument existiert noch nicht — wird beim ersten Speichern erstellt')
