@@ -120,7 +120,7 @@ export const GuestJoin = memo(function GuestJoin({
             <h3>Wer kommt? ({persons.length})</h3>
             <div className="guest-names">
               {persons.map((p) => (
-                <span key={p.id} className="guest-name-chip">{p.name}</span>
+                <span key={p.id} className="guest-name-chip">{p.name.toLowerCase() === 'ich' ? 'Daniel' : p.name}</span>
               ))}
             </div>
           </div>
@@ -167,7 +167,7 @@ export const GuestJoin = memo(function GuestJoin({
             <h3>Wer kommt?</h3>
             <div className="guest-names">
               {persons.map((p) => (
-                <span key={p.id} className="guest-name-chip">{p.name}</span>
+                <span key={p.id} className="guest-name-chip">{p.name.toLowerCase() === 'ich' ? 'Daniel' : p.name}</span>
               ))}
             </div>
           </div>
@@ -258,7 +258,7 @@ export const GuestJoin = memo(function GuestJoin({
         <div className="guest-names">
           {persons.map((p) => (
             <span key={p.id} className={`guest-name-chip ${p.id === joinedPerson.id ? 'guest-name-me' : ''}`}>
-              {p.name}
+              {p.name.toLowerCase() === 'ich' ? 'Daniel' : p.name}
             </span>
           ))}
         </div>

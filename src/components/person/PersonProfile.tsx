@@ -93,6 +93,10 @@ export const PersonProfile = memo(function PersonProfile({
     const totalSpent = eventDetails.reduce((s, e) => s + e.totalCost, 0)
     const totalCharged = eventDetails.reduce((s, e) => s + e.charged, 0)
     const totalReceived = eventDetails.reduce((s, e) => s + e.received, 0)
+    const totalDebt = eventDetails.reduce((s, e) => {
+      if (e.note) return s
+      return s + Math.max(0, e.charged - e.received)
+    }, 0)
 
     // Favorite items across all events
     const itemCounts = new Map<string, number>()
@@ -115,6 +119,7 @@ export const PersonProfile = memo(function PersonProfile({
       totalSpent,
       totalCharged,
       totalReceived,
+      totalDebt,
       favoriteItems,
       costOverTime,
       avgCostPerEvent,
@@ -166,8 +171,8 @@ export const PersonProfile = memo(function PersonProfile({
             </div>
             <div className="hero-stat-divider" />
             <div className="hero-stat">
-              <span className={`hero-stat-value ${data.totalCharged - data.totalReceived > 0 ? 'negative' : ''}`}>
-                {formatCurrency(Math.max(0, data.totalCharged - data.totalReceived))}
+              <span className={`hero-stat-value ${data.totalDebt > 0 ? 'negative' : ''}`}>
+                {formatCurrency(data.totalDebt)}
               </span>
               <span className="hero-stat-label">Offen</span>
             </div>

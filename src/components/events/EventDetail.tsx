@@ -667,7 +667,13 @@ export const EventDetail = memo(function EventDetail({
               if (isMe(p)) return sum
               return sum + getBilling(p.id).received
             }, 0)
-            const openDebts = totalCharged - othersReceived
+            const openDebts = persons.reduce((sum, p) => {
+              if (isMe(p)) return sum
+              const b = getBilling(p.id)
+              if (b.note) return sum
+              return sum + Math.max(0, b.charged - b.received)
+            }, 0)
+            const myActualCost = totalAllCosts - othersReceived
             return (
               <>
                 <div className="summary-row">
@@ -678,7 +684,7 @@ export const EventDetail = memo(function EventDetail({
                 </div>
                 <div className="summary-row">
                   <span>Meine Kosten (was übrig bleibt):</span>
-                  <strong>{formatCurrency(myCost)}</strong>
+                  <strong>{formatCurrency(myActualCost)}</strong>
                 </div>
               </>
             )

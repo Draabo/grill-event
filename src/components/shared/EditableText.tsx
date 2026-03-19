@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
+import { formatDateGerman } from '../../utils/format'
 
 interface EditableTextProps {
   value: string
@@ -82,7 +83,7 @@ export function EditableText({
       title={isTouchDevice() ? 'Tippen zum Bearbeiten' : 'Doppelklick zum Bearbeiten'}
       style={{ cursor: 'text' }}
     >
-      {value}
+      {type === 'date' ? formatDateGerman(value) : value}
     </span>
   )
 }

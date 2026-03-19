@@ -322,6 +322,16 @@
   color: var(--text-secondary);
 }
 
+.tag.tag-open {
+  background: rgba(46, 204, 113, 0.15);
+  color: #27ae60;
+}
+
+.tag.tag-closed {
+  background: rgba(231, 76, 60, 0.15);
+  color: #e74c3c;
+}
+
 .event-card-bottom {
   border-top: 1px solid var(--border);
   padding-top: 10px;

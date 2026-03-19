@@ -116,8 +116,11 @@ export const Overview = memo(function Overview({
     const totalCostsAll = events.reduce((sum, ev) => sum + getEventTotalCosts(ev), 0)
     const totalMyCosts = events.reduce((sum, ev) => {
       const costs = getEventTotalCosts(ev)
-      const charged = getEventTotalCharged(ev)
-      return sum + (costs - charged)
+      const othersReceived = (ev.persons ?? []).reduce((s, p) => {
+        if (isMe(p.name)) return s
+        return s + ((ev.billing ?? []).find((b) => b.personId === p.id)?.received ?? 0)
+      }, 0)
+      return sum + (costs - othersReceived)
     }, 0)
 
     const debtMap = new Map<string, number>()
@@ -133,9 +136,6 @@ export const Overview = memo(function Overview({
           debtMap.set(p.name, (debtMap.get(p.name) ?? 0) + debt)
         }
       }
-    }
-    for (const [key, val] of debtMap) {
-      if (val === 0) debtMap.delete(key)
     }
     const totalDebt = [...debtMap.values()].reduce((s, v) => s + v, 0)
 
@@ -340,6 +340,11 @@ export const Overview = memo(function Overview({
                   </div>
                   <h3 className="event-card-name">{event.name}</h3>
                   <div className="event-card-tags">
+                    {event.shareCode && (
+                      <span className={`tag ${event.registrationOpen !== false ? 'tag-open' : 'tag-closed'}`}>
+                        {event.registrationOpen !== false ? 'Offen' : 'Geschlossen'}
+                      </span>
+                    )}
                     <span className="tag">{personCount} Personen</span>
                     <span className="tag">{itemCount} Artikel</span>
                   </div>
