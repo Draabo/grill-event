@@ -1,6 +1,7 @@
 export interface Person {
   id: string
   name: string
+  pin?: string
 }
 
 export interface GrillItem {
@@ -26,6 +27,8 @@ export interface GrillEvent {
   id: string
   name: string
   date: string
+  shareCode?: string
+  registrationOpen?: boolean
   persons: Person[]
   items: GrillItem[]
   orders: OrderEntry[]
@@ -41,6 +44,7 @@ export interface EventsState {
   events: GrillEvent[]
   templates: SavedTemplates
   paypalUsername?: string
+  adminPin?: string
 }
 
-export type ViewMode = 'overview' | 'event-detail' | 'statistics' | 'person-profile'
+export type ViewMode = 'overview' | 'event-detail' | 'statistics' | 'person-profile' | 'guest-join'

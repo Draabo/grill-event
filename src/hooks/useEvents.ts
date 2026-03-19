@@ -20,16 +20,18 @@ export function useEvents() {
   const [events, setEvents] = useState<GrillEvent[]>([])
   const [templates, setTemplates] = useState<SavedTemplates>(DEFAULT_TEMPLATES)
   const [paypalUsername, setPaypalUsername] = useState('')
+  const [adminPin, setAdminPin] = useState('')
   const [loaded, setLoaded] = useState(false)
   const [syncStatus, setSyncStatus] = useState<'off' | 'connected' | 'syncing' | 'error'>('off')
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const lastSavedHash = useRef('')
 
-  const makeHash = (state: { events: GrillEvent[]; templates: SavedTemplates; paypalUsername?: string }) => {
+  const makeHash = (state: { events: GrillEvent[]; templates: SavedTemplates; paypalUsername?: string; adminPin?: string }) => {
     return JSON.stringify({
       events: state.events,
       templates: state.templates,
       paypalUsername: state.paypalUsername ?? '',
+      adminPin: state.adminPin ?? '',
     })
   }
 
@@ -39,6 +41,7 @@ export function useEvents() {
       setEvents(migrateEvents(state.events ?? []))
       setTemplates(state.templates ?? DEFAULT_TEMPLATES)
       setPaypalUsername(state.paypalUsername ?? '')
+      setAdminPin(state.adminPin ?? '')
       setLoaded(true)
     })
   }, [])
@@ -58,6 +61,7 @@ export function useEvents() {
         setEvents(migrateEvents(state.events ?? []))
         setTemplates(state.templates ?? DEFAULT_TEMPLATES)
         setPaypalUsername(state.paypalUsername ?? '')
+        setAdminPin(state.adminPin ?? '')
         setSyncStatus('connected')
       },
       () => {
@@ -72,8 +76,8 @@ export function useEvents() {
     if (!loaded) return
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
     saveTimeoutRef.current = setTimeout(async () => {
-      const state = { events, templates, ...(paypalUsername ? { paypalUsername } : {}) }
-      const hash = makeHash({ events, templates, paypalUsername })
+      const state = { events, templates, ...(paypalUsername ? { paypalUsername } : {}), ...(adminPin ? { adminPin } : {}) }
+      const hash = makeHash({ events, templates, paypalUsername, adminPin })
       // Skip save if nothing changed
       if (hash === lastSavedHash.current) return
       lastSavedHash.current = hash
@@ -92,7 +96,7 @@ export function useEvents() {
     return () => {
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
     }
-  }, [events, templates, paypalUsername, loaded])
+  }, [events, templates, paypalUsername, adminPin, loaded])
 
   // --- Templates ---
 
@@ -218,8 +222,8 @@ export function useEvents() {
     )
   }, [])
 
-  const addPerson = useCallback((eventId: string, name: string) => {
-    const person: Person = { id: generateId(), name }
+  const addPerson = useCallback((eventId: string, name: string, pin?: string) => {
+    const person: Person = { id: generateId(), name, ...(pin ? { pin } : {}) }
     setEvents((prev) =>
       prev.map((e) =>
         e.id === eventId ? { ...e, persons: [...e.persons, person] } : e
@@ -390,6 +394,31 @@ export function useEvents() {
     )
   }, [])
 
+  const toggleRegistration = useCallback((eventId: string) => {
+    setEvents((prev) =>
+      prev.map((e) =>
+        e.id === eventId ? { ...e, registrationOpen: !e.registrationOpen } : e
+      )
+    )
+  }, [])
+
+  const generateShareCode = useCallback((eventId: string) => {
+    setEvents((prev) =>
+      prev.map((e) => {
+        if (e.id !== eventId || e.shareCode) return e
+        const code = e.name
+          .replace(/[^a-zA-Z0-9]/g, '')
+          .toUpperCase()
+          .slice(0, 8) + '-' + Math.random().toString(36).slice(2, 6).toUpperCase()
+        return { ...e, shareCode: code, registrationOpen: true }
+      })
+    )
+  }, [])
+
+  const getEventByShareCode = useCallback((code: string) => {
+    return events.find((e) => e.shareCode === code) ?? null
+  }, [events])
+
   const autoCharge = useCallback((eventId: string) => {
     setEvents((prev) =>
       prev.map((e) => {
@@ -423,6 +452,8 @@ export function useEvents() {
     templates,
     paypalUsername,
     setPaypalUsername,
+    adminPin,
+    setAdminPin,
     syncStatus,
     addEvent,
     deleteEvent,
@@ -441,6 +472,9 @@ export function useEvents() {
     dismissDebt,
     markPersonPaid,
     autoCharge,
+    toggleRegistration,
+    generateShareCode,
+    getEventByShareCode,
     reorderItems,
     reorderPersons,
     addTemplatePerson,

@@ -76,6 +76,7 @@ export function subscribeToFirestore(
           events: data.events ?? [],
           templates: data.templates ?? { persons: [], items: [] },
           paypalUsername: data.paypalUsername,
+          adminPin: data.adminPin,
         }
         onData(state)
       } else {

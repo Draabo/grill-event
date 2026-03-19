@@ -1,16 +1,36 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { ViewMode } from './types'
 import { useEvents } from './hooks/useEvents'
 import { Overview } from './components/overview'
 import { EventDetail } from './components/events'
 import { Statistics } from './components/statistics'
 import { PersonProfile } from './components/person'
+import { GuestJoin } from './components/guest'
 import './App.css'
 
 function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('overview')
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null)
   const [selectedPersonName, setSelectedPersonName] = useState<string | null>(null)
+  const [guestShareCode, setGuestShareCode] = useState<string | null>(null)
+  const [adminUnlocked, setAdminUnlocked] = useState(false)
+  const [pinInput, setPinInput] = useState('')
+  const [pinError, setPinError] = useState(false)
+  const [isSettingPin, setIsSettingPin] = useState(false)
+
+  // Hash routing for guest join
+  useEffect(() => {
+    const checkHash = () => {
+      const match = window.location.hash.match(/^#\/join\/(.+)$/)
+      if (match) {
+        setGuestShareCode(match[1])
+        setViewMode('guest-join')
+      }
+    }
+    checkHash()
+    window.addEventListener('hashchange', checkHash)
+    return () => window.removeEventListener('hashchange', checkHash)
+  }, [])
 
   const {
     events,
@@ -32,6 +52,11 @@ function App() {
     dismissDebt,
     markPersonPaid,
     autoCharge,
+    generateShareCode,
+    getEventByShareCode,
+    toggleRegistration,
+    adminPin,
+    setAdminPin,
     reorderItems,
     reorderPersons,
     paypalUsername,
@@ -67,7 +92,71 @@ function App() {
 
   return (
     <div className="app">
-      <header className="app-header">
+      {viewMode !== 'guest-join' && !adminUnlocked && (
+        <div className="admin-gate">
+          <div className="admin-gate-card">
+            <h2>Grill Event</h2>
+            {!adminPin ? (
+              <>
+                <p>Setze einen Admin-Pin um deine Events zu schuetzen.</p>
+                <form onSubmit={(e) => {
+                  e.preventDefault()
+                  if (pinInput.length >= 4) {
+                    if (!isSettingPin) {
+                      setIsSettingPin(true)
+                      setPinInput('')
+                    } else {
+                      setAdminPin(pinInput)
+                      setAdminUnlocked(true)
+                      setPinInput('')
+                      setIsSettingPin(false)
+                    }
+                  }
+                }}>
+                  <input
+                    type="text" autoComplete="off" className="pin-input"
+                    inputMode="numeric"
+                    value={pinInput}
+                    onChange={(e) => { setPinInput(e.target.value); setPinError(false) }}
+                    placeholder={isSettingPin ? 'Pin wiederholen...' : 'Neuer Pin (mind. 4 Zeichen)...'}
+                    autoFocus
+                  />
+                  <button className="btn btn-primary" type="submit">
+                    {isSettingPin ? 'Pin setzen' : 'Weiter'}
+                  </button>
+                </form>
+              </>
+            ) : (
+              <>
+                <p>Admin-Pin eingeben</p>
+                <form onSubmit={(e) => {
+                  e.preventDefault()
+                  if (pinInput === adminPin) {
+                    setAdminUnlocked(true)
+                    setPinInput('')
+                    setPinError(false)
+                  } else {
+                    setPinError(true)
+                  }
+                }}>
+                  <input
+                    type="text" autoComplete="off" className="pin-input"
+                    inputMode="numeric"
+                    value={pinInput}
+                    onChange={(e) => { setPinInput(e.target.value); setPinError(false) }}
+                    placeholder="Pin..."
+                    autoFocus
+                  />
+                  {pinError && <span className="pin-error">Falscher Pin</span>}
+                  <button className="btn btn-primary" type="submit">Entsperren</button>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {viewMode !== 'guest-join' && adminUnlocked && <header className="app-header">
         <div className="app-header-logo" onClick={handleBack} style={{ cursor: 'pointer' }}>
           <div className="header-grill">
             <div className="header-smoke-container">
@@ -104,10 +193,10 @@ function App() {
             />
           )}
         </div>
-      </header>
+      </header>}
 
       <main className="app-main">
-        {viewMode === 'overview' && (
+        {viewMode === 'overview' && adminUnlocked && (
           <Overview
             events={events}
             onSelectEvent={handleSelectEvent}
@@ -123,7 +212,7 @@ function App() {
           />
         )}
 
-        {viewMode === 'event-detail' && selectedEvent && (
+        {viewMode === 'event-detail' && adminUnlocked && selectedEvent && (
           <EventDetail
             event={selectedEvent}
             templates={templates}
@@ -146,6 +235,8 @@ function App() {
             onUpdateEventName={(name) => updateEventName(selectedEvent.id, name)}
             onUpdateEventDate={(date) => updateEventDate(selectedEvent.id, date)}
             onAutoCharge={() => autoCharge(selectedEvent.id)}
+            onGenerateShareCode={() => generateShareCode(selectedEvent.id)}
+            onToggleRegistration={() => toggleRegistration(selectedEvent.id)}
             onReorderItems={(from, to) => reorderItems(selectedEvent.id, from, to)}
             onReorderPersons={(from, to) => reorderPersons(selectedEvent.id, from, to)}
             onSelectPerson={handleSelectPerson}
@@ -156,7 +247,7 @@ function App() {
           />
         )}
 
-        {viewMode === 'statistics' && (
+        {viewMode === 'statistics' && adminUnlocked && (
           <Statistics
             events={events}
             onBack={handleBack}
@@ -164,7 +255,7 @@ function App() {
           />
         )}
 
-        {viewMode === 'person-profile' && selectedPersonName && (
+        {viewMode === 'person-profile' && adminUnlocked && selectedPersonName && (
           <PersonProfile
             personName={selectedPersonName}
             events={events}
@@ -172,6 +263,27 @@ function App() {
             onSelectEvent={handleSelectEvent}
           />
         )}
+        {viewMode === 'guest-join' && (() => {
+          const guestEvent = guestShareCode ? getEventByShareCode(guestShareCode) : null
+          if (!guestEvent) return (
+            <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-secondary)' }}>
+              <p>Event nicht gefunden.</p>
+              <p>Pruefe den Link oder frage den Veranstalter.</p>
+            </div>
+          )
+          return (
+            <GuestJoin
+              event={guestEvent}
+              allEvents={events}
+              onAddPerson={(name, pin) => addPerson(guestEvent.id, name, pin)}
+              onRemovePerson={(personId) => removePerson(guestEvent.id, personId)}
+              onAddItem={(name) => addItem(guestEvent.id, name)}
+              onSetOrderQuantity={(personId, itemId, qty) =>
+                setOrderQuantity(guestEvent.id, personId, itemId, qty)
+              }
+            />
+          )
+        })()}
       </main>
     </div>
   )

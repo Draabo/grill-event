@@ -28,6 +28,13 @@
   font-size: 22px;
 }
 
+.event-share-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 .event-detail-date {
   font-size: 13px;
   font-weight: 600;

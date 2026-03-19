@@ -42,6 +42,8 @@ interface EventDetailProps {
   onUpdateEventName: (name: string) => void
   onUpdateEventDate: (date: string) => void
   onAutoCharge: () => void
+  onGenerateShareCode: () => void
+  onToggleRegistration: () => void
   onReorderItems: (fromIndex: number, toIndex: number) => void
   onReorderPersons: (fromIndex: number, toIndex: number) => void
   onSelectPerson?: (name: string) => void
@@ -67,6 +69,8 @@ export const EventDetail = memo(function EventDetail({
   onUpdateEventName,
   onUpdateEventDate,
   onAutoCharge,
+  onGenerateShareCode,
+  onToggleRegistration,
   onReorderItems,
   onReorderPersons,
   onSelectPerson,
@@ -79,6 +83,22 @@ export const EventDetail = memo(function EventDetail({
   const [newItem, setNewItem] = useState('')
   const [ordersHidden, setOrdersHidden] = useState(false)
   const [ordersCopied, setOrdersCopied] = useState(false)
+  const [shareCopied, setShareCopied] = useState(false)
+
+  const handleShare = useCallback(() => {
+    if (!event.shareCode) {
+      onGenerateShareCode()
+    }
+  }, [event.shareCode, onGenerateShareCode])
+
+  const handleCopyShareLink = useCallback(() => {
+    if (!event.shareCode) return
+    const url = `${window.location.origin}${window.location.pathname}#/join/${event.shareCode}`
+    navigator.clipboard.writeText(url).then(() => {
+      setShareCopied(true)
+      setTimeout(() => setShareCopied(false), 2000)
+    })
+  }, [event.shareCode])
 
   // Drag & Drop state
   const dragItemRef = useRef<number | null>(null)
@@ -256,6 +276,25 @@ export const EventDetail = memo(function EventDetail({
             className="event-detail-date editable-text"
             inputClassName="editable-input editable-input-date"
           />
+        </div>
+        <div className="event-share-actions">
+          {event.shareCode && (
+            <button
+              className={`btn btn-sm ${event.registrationOpen ? 'btn-primary' : 'btn-secondary'}`}
+              onClick={onToggleRegistration}
+            >
+              {event.registrationOpen ? 'Anmeldung offen' : 'Anmeldung geschlossen'}
+            </button>
+          )}
+          {event.shareCode ? (
+            <button className="btn btn-secondary btn-sm" onClick={handleCopyShareLink}>
+              {shareCopied ? 'Link kopiert!' : 'Teilen-Link kopieren'}
+            </button>
+          ) : (
+            <button className="btn btn-secondary btn-sm" onClick={handleShare}>
+              Teilen
+            </button>
+          )}
         </div>
       </div>
 

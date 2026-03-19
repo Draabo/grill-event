@@ -333,6 +333,73 @@ body {
   box-shadow: 0 0 0 2px var(--accent);
 }
 
+/* Admin Gate */
+.admin-gate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.admin-gate-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 340px;
+  width: 100%;
+  text-align: center;
+}
+
+.admin-gate-card h2 {
+  margin: 0 0 8px;
+  color: var(--accent);
+  font-size: 22px;
+}
+
+.admin-gate-card p {
+  margin: 0 0 20px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.admin-gate-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-gate-card input {
+  padding: 12px 16px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 16px;
+  text-align: center;
+}
+
+.admin-gate-card input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.admin-gate-card .btn {
+  padding: 12px;
+  font-size: 15px;
+  border-radius: 10px;
+}
+
+.pin-input {
+  -webkit-text-security: disc;
+}
+
+.pin-error {
+  color: var(--danger);
+  font-size: 13px;
+}
+
 /* Mobile */
 @media (max-width: 600px) {
   .app-header {
