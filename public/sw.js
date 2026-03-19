@@ -31,17 +31,16 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
+  // Network-first: try network, fall back to cache (offline)
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const fetched = fetch(event.request).then((response) => {
+    fetch(event.request)
+      .then((response) => {
         if (response.ok) {
           const clone = response.clone()
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone))
         }
         return response
-      }).catch(() => cached)
-
-      return cached || fetched
-    })
+      })
+      .catch(() => caches.match(event.request))
   )
 })

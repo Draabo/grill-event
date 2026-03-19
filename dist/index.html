@@ -17,7 +17,18 @@
     <div id="root"></div>
     <script>
       if ('serviceWorker' in navigator && !window.electronAPI) {
-        navigator.serviceWorker.register('./sw.js')
+        navigator.serviceWorker.register('./sw.js').then((reg) => {
+          reg.addEventListener('updatefound', () => {
+            const newSW = reg.installing
+            if (newSW) {
+              newSW.addEventListener('statechange', () => {
+                if (newSW.state === 'activated' && navigator.serviceWorker.controller) {
+                  window.location.reload()
+                }
+              })
+            }
+          })
+        })
       }
     </script>
   </body>
