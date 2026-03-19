@@ -1,4 +1,4 @@
-import { memo, useState, useRef, useCallback } from 'react'
+import { memo, useState, useRef, useCallback, useEffect } from 'react'
 import { GrillEvent, GrillItem, PersonBilling, SavedTemplates } from '../../types'
 import { formatCurrency } from '../../utils/format'
 import { getItemEmoji } from '../../utils/emoji'
@@ -84,21 +84,36 @@ export const EventDetail = memo(function EventDetail({
   const [ordersHidden, setOrdersHidden] = useState(false)
   const [ordersCopied, setOrdersCopied] = useState(false)
   const [shareCopied, setShareCopied] = useState(false)
+  const pendingCopy = useRef(false)
 
-  const handleShare = useCallback(() => {
-    if (!event.shareCode) {
-      onGenerateShareCode()
-    }
-  }, [event.shareCode, onGenerateShareCode])
-
-  const handleCopyShareLink = useCallback(() => {
-    if (!event.shareCode) return
-    const url = `${window.location.origin}${window.location.pathname}#/join/${event.shareCode}`
+  const copyShareLink = useCallback((code: string) => {
+    const url = `${window.location.origin}${window.location.pathname}#/join/${code}`
     navigator.clipboard.writeText(url).then(() => {
       setShareCopied(true)
       setTimeout(() => setShareCopied(false), 2000)
     })
-  }, [event.shareCode])
+  }, [])
+
+  const handleShare = useCallback(() => {
+    if (!event.shareCode) {
+      onGenerateShareCode()
+      pendingCopy.current = true
+    } else {
+      copyShareLink(event.shareCode)
+    }
+  }, [event.shareCode, onGenerateShareCode, copyShareLink])
+
+  // Auto-copy when share code appears after generation
+  useEffect(() => {
+    if (pendingCopy.current && event.shareCode) {
+      pendingCopy.current = false
+      copyShareLink(event.shareCode)
+    }
+  }, [event.shareCode, copyShareLink])
+
+  const handleCopyShareLink = useCallback(() => {
+    if (event.shareCode) copyShareLink(event.shareCode)
+  }, [event.shareCode, copyShareLink])
 
   // Drag & Drop state
   const dragItemRef = useRef<number | null>(null)
