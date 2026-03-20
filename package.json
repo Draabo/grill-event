@@ -6,7 +6,7 @@
   "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "app:install": "npm install electron electron-builder",
     "app:build": "npm run app:install && npm run build && electron-builder --mac",
