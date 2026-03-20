@@ -61,7 +61,7 @@ export async function saveToFirestore(state: EventsState): Promise<void> {
 }
 
 export function subscribeToFirestore(
-  onData: (state: EventsState) => void,
+  onData: (state: EventsState | null) => void,
   onError: (err: Error) => void,
 ): () => void {
   if (!db) return () => {}
@@ -81,6 +81,7 @@ export function subscribeToFirestore(
         onData(state)
       } else {
         console.log('[Firebase] Dokument existiert noch nicht — wird beim ersten Speichern erstellt')
+        onData(null)
       }
     },
     (err) => {

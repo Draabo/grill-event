@@ -57,6 +57,7 @@ function App() {
     toggleRegistration,
     adminPin,
     setAdminPin,
+    firebaseReady,
     reorderItems,
     reorderPersons,
     paypalUsername,
@@ -92,7 +93,15 @@ function App() {
 
   return (
     <div className="app">
-      {viewMode !== 'guest-join' && !adminUnlocked && (
+      {viewMode !== 'guest-join' && !adminUnlocked && !firebaseReady && (
+        <div className="admin-gate">
+          <div className="admin-gate-card">
+            <h2>Grill Event</h2>
+            <p>Laden...</p>
+          </div>
+        </div>
+      )}
+      {viewMode !== 'guest-join' && !adminUnlocked && firebaseReady && (
         <div className="admin-gate">
           <div className="admin-gate-card">
             <h2>Grill Event</h2>

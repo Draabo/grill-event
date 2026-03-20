@@ -22,6 +22,7 @@ export function useEvents() {
   const [paypalUsername, setPaypalUsername] = useState('')
   const [adminPin, setAdminPin] = useState('')
   const [loaded, setLoaded] = useState(false)
+  const [firebaseReady, setFirebaseReady] = useState(!isFirebaseEnabled())
   const [syncStatus, setSyncStatus] = useState<'off' | 'connected' | 'syncing' | 'error'>('off')
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const lastSavedHash = useRef('')
@@ -51,6 +52,11 @@ export function useEvents() {
     if (!loaded || !isFirebaseEnabled()) return
     const unsubscribe = subscribeToFirestore(
       (state) => {
+        setFirebaseReady(true)
+        if (!state) {
+          setSyncStatus('connected')
+          return
+        }
         const hash = makeHash(state)
         // Ignore if data is same as what we last saved
         if (hash === lastSavedHash.current) {
@@ -65,6 +71,7 @@ export function useEvents() {
         setSyncStatus('connected')
       },
       () => {
+        setFirebaseReady(true)
         setSyncStatus('error')
       }
     )
@@ -454,6 +461,7 @@ export function useEvents() {
     setPaypalUsername,
     adminPin,
     setAdminPin,
+    firebaseReady,
     syncStatus,
     addEvent,
     deleteEvent,
