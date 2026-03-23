@@ -226,7 +226,7 @@
 /* Event Grid */
 .event-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
   gap: 14px;
 }
 
@@ -263,35 +263,35 @@
 
 .event-card-actions {
   display: flex;
-  gap: 4px;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
 }
 
-.event-duplicate-btn,
-.event-delete-btn {
-  background: none;
-  border: 1px solid transparent;
+.card-action-btn {
+  flex: 1;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
   color: var(--text-secondary);
   cursor: pointer;
-  font-size: 14px;
-  padding: 2px 8px;
+  font-size: 12px;
+  padding: 5px 4px;
   border-radius: 6px;
-  opacity: 0;
-  transition: opacity 0.15s, color 0.15s, border-color 0.15s;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  white-space: nowrap;
 }
 
-.event-card:hover .event-duplicate-btn,
-.event-card:hover .event-delete-btn {
-  opacity: 1;
-}
-
-.event-duplicate-btn:hover {
-  color: var(--accent);
+.card-action-btn:hover {
+  color: var(--text-primary);
   border-color: var(--accent);
+  background: rgba(255, 140, 66, 0.08);
 }
 
-.event-delete-btn:hover {
+.card-action-btn.action-delete:hover {
   color: var(--danger);
   border-color: var(--danger);
+  background: rgba(231, 76, 60, 0.08);
 }
 
 /* Avatar in detail list */
@@ -325,6 +325,11 @@
 .tag.tag-open {
   background: rgba(46, 204, 113, 0.15);
   color: #27ae60;
+}
+
+.tag.tag-reg-closed {
+  background: rgba(243, 156, 18, 0.15);
+  color: #f39c12;
 }
 
 .tag.tag-closed {

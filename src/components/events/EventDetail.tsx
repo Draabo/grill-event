@@ -43,7 +43,7 @@ interface EventDetailProps {
   onUpdateEventDate: (date: string) => void
   onAutoCharge: () => void
   onGenerateShareCode: () => void
-  onToggleRegistration: () => void
+  onCycleEventStatus: () => void
   onReorderItems: (fromIndex: number, toIndex: number) => void
   onReorderPersons: (fromIndex: number, toIndex: number) => void
   onSelectPerson?: (name: string) => void
@@ -70,7 +70,7 @@ export const EventDetail = memo(function EventDetail({
   onUpdateEventDate,
   onAutoCharge,
   onGenerateShareCode,
-  onToggleRegistration,
+  onCycleEventStatus,
   onReorderItems,
   onReorderPersons,
   onSelectPerson,
@@ -293,14 +293,23 @@ export const EventDetail = memo(function EventDetail({
           />
         </div>
         <div className="event-share-actions">
-          {event.shareCode && (
-            <button
-              className={`btn btn-sm ${event.registrationOpen ? 'btn-primary' : 'btn-secondary'}`}
-              onClick={onToggleRegistration}
-            >
-              {event.registrationOpen ? 'Anmeldung offen' : 'Anmeldung geschlossen'}
-            </button>
-          )}
+          {event.shareCode && (() => {
+            const status = event.status ?? 'open'
+            const label = status === 'open' ? 'Anmeldung offen'
+              : status === 'registration-closed' ? 'Anmeldung geschlossen'
+              : 'Abgeschlossen'
+            const btnClass = status === 'open' ? 'btn-primary'
+              : status === 'registration-closed' ? 'btn-warning'
+              : 'btn-secondary'
+            return (
+              <button
+                className={`btn btn-sm ${btnClass}`}
+                onClick={onCycleEventStatus}
+              >
+                {label}
+              </button>
+            )
+          })()}
           {event.shareCode ? (
             <button className="btn btn-secondary btn-sm" onClick={handleCopyShareLink}>
               {shareCopied ? 'Link kopiert!' : 'Teilen-Link kopieren'}
@@ -379,7 +388,7 @@ export const EventDetail = memo(function EventDetail({
 
       {items.length === 0 && persons.length === 0 ? (
         <div className="empty-state">
-          <p>Fuege Artikel und Personen hinzu, um die Tabelle zu befuellen.</p>
+          <p>Füge Artikel und Personen hinzu, um die Tabelle zu befüllen.</p>
         </div>
       ) : (
         <>

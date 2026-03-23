@@ -70,7 +70,7 @@ export const GuestJoin = memo(function GuestJoin({
 
   const handleLeave = useCallback(() => {
     if (!joinedPerson) return
-    if (confirm('Moechtest du dich wirklich abmelden? Deine Bestellungen werden geloescht.')) {
+    if (confirm('Möchtest du dich wirklich abmelden? Deine Bestellungen werden gelöscht.')) {
       onRemovePerson(joinedPerson.id)
       setJoinedPersonId(null)
       setWaitingForName('')
@@ -104,8 +104,10 @@ export const GuestJoin = memo(function GuestJoin({
     return extraNames
   }, [allEvents, items])
 
-  // Registration closed (default is open if undefined)
-  if (event.registrationOpen === false && !joinedPerson) {
+  const eventStatus = event.status ?? 'open'
+
+  // Registration closed or event finished — block new signups
+  if (eventStatus !== 'open' && !joinedPerson) {
     return (
       <div className="guest-page">
         <div className="guest-hero">
@@ -113,7 +115,9 @@ export const GuestJoin = memo(function GuestJoin({
           <span className="guest-event-date">{formatDateGerman(event.date)}</span>
         </div>
         <div className="guest-closed">
-          <p>Die Anmeldung fuer dieses Event ist geschlossen.</p>
+          <p>{eventStatus === 'closed'
+            ? 'Dieses Event ist abgeschlossen.'
+            : 'Die Anmeldung für dieses Event ist geschlossen.'}</p>
         </div>
         {persons.length > 0 && (
           <div className="guest-who-is-coming">
@@ -187,7 +191,7 @@ export const GuestJoin = memo(function GuestJoin({
 
       {/* Order items */}
       <div className="guest-section">
-        <h3>Was moechtest du bestellen?</h3>
+        <h3>Was möchtest du bestellen?</h3>
         {items.length === 0 ? (
           <p className="guest-hint">Noch keine Artikel vorhanden. Schlage welche vor!</p>
         ) : (

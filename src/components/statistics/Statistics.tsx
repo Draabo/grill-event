@@ -504,7 +504,7 @@ export const Statistics = memo(function Statistics({ events, onBack, onSelectPer
 
       {events.length === 0 && (
         <div className="empty-state">
-          <p>Noch keine Daten fuer Statistiken vorhanden.</p>
+          <p>Noch keine Daten für Statistiken vorhanden.</p>
         </div>
       )}
     </div>

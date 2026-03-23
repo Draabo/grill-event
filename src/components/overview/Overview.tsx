@@ -1,4 +1,4 @@
-import { memo, useState, useMemo } from 'react'
+import { memo, useState, useCallback, useMemo } from 'react'
 import { GrillEvent, GrillItem } from '../../types'
 import { formatDateGerman, formatCurrency } from '../../utils/format'
 import { PayPalModal } from '../shared/PayPalModal'
@@ -10,6 +10,8 @@ interface OverviewProps {
   onAddEvent: (name: string, date: string) => string
   onDeleteEvent: (eventId: string) => void
   onDuplicateEvent: (eventId: string) => void
+  onCycleEventStatus: (eventId: string) => void
+  onGenerateShareCode: (eventId: string) => void
   onShowStatistics: () => void
   onSelectPerson: (name: string) => void
   onDismissDebt: (personName: string) => void
@@ -80,6 +82,8 @@ export const Overview = memo(function Overview({
   onAddEvent,
   onDeleteEvent,
   onDuplicateEvent,
+  onCycleEventStatus,
+  onGenerateShareCode,
   onShowStatistics,
   onSelectPerson,
   onDismissDebt,
@@ -93,6 +97,15 @@ export const Overview = memo(function Overview({
   const [showPaypalSettings, setShowPaypalSettings] = useState(false)
   const [paypalDraft, setPaypalDraft] = useState(paypalUsername)
   const [paypalModal, setPaypalModal] = useState<{ name: string; amount: number } | null>(null)
+  const [copiedEventId, setCopiedEventId] = useState<string | null>(null)
+
+  const handleCopyShareLink = useCallback((eventId: string, shareCode: string) => {
+    const url = `${window.location.origin}${window.location.pathname}#/join/${shareCode}`
+    navigator.clipboard.writeText(url).then(() => {
+      setCopiedEventId(eventId)
+      setTimeout(() => setCopiedEventId(null), 2000)
+    })
+  }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -306,6 +319,8 @@ export const Overview = memo(function Overview({
               const personCount = event.persons?.length ?? 0
               const itemCount = event.items?.length ?? 0
 
+              const status = event.status ?? 'open'
+
               return (
                 <div
                   key={event.id}
@@ -316,35 +331,18 @@ export const Overview = memo(function Overview({
                     <div className="event-card-date-badge">
                       {formatDateGerman(event.date)}
                     </div>
-                    <button
-                      className="event-duplicate-btn"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        onDuplicateEvent(event.id)
-                      }}
-                      title="Event duplizieren"
-                    >
-                      &#x2398;
-                    </button>
-                    <button
-                      className="event-delete-btn"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        if (confirm(`"${event.name}" wirklich loeschen?`)) {
-                          onDeleteEvent(event.id)
-                        }
-                      }}
-                    >
-                      x
-                    </button>
+                    {event.shareCode && (() => {
+                      const tagClass = status === 'open' ? 'tag-open'
+                        : status === 'registration-closed' ? 'tag-reg-closed'
+                        : 'tag-closed'
+                      const label = status === 'open' ? 'Offen'
+                        : status === 'registration-closed' ? 'Anmeldung zu'
+                        : 'Abgeschlossen'
+                      return <span className={`tag ${tagClass}`}>{label}</span>
+                    })()}
                   </div>
                   <h3 className="event-card-name">{event.name}</h3>
                   <div className="event-card-tags">
-                    {event.shareCode && (
-                      <span className={`tag ${event.registrationOpen !== false ? 'tag-open' : 'tag-closed'}`}>
-                        {event.registrationOpen !== false ? 'Offen' : 'Geschlossen'}
-                      </span>
-                    )}
                     <span className="tag">{personCount} Personen</span>
                     <span className="tag">{itemCount} Artikel</span>
                   </div>
@@ -362,6 +360,52 @@ export const Overview = memo(function Overview({
                       )}
                     </div>
                   )}
+                  <div className="event-card-actions" onClick={(e) => e.stopPropagation()}>
+                    {event.shareCode ? (
+                      <button
+                        className="card-action-btn"
+                        onClick={() => handleCopyShareLink(event.id, event.shareCode!)}
+                        title="Teilen-Link kopieren"
+                      >
+                        {copiedEventId === event.id ? '✓ Kopiert' : '🔗 Link'}
+                      </button>
+                    ) : (
+                      <button
+                        className="card-action-btn"
+                        onClick={() => onGenerateShareCode(event.id)}
+                        title="Teilen aktivieren"
+                      >
+                        🔗 Teilen
+                      </button>
+                    )}
+                    {event.shareCode && (
+                      <button
+                        className={`card-action-btn ${status === 'open' ? 'action-open' : status === 'registration-closed' ? 'action-reg-closed' : 'action-closed'}`}
+                        onClick={() => onCycleEventStatus(event.id)}
+                        title="Status ändern"
+                      >
+                        {status === 'open' ? '🟢' : status === 'registration-closed' ? '🟠' : '🔴'}
+                      </button>
+                    )}
+                    <button
+                      className="card-action-btn"
+                      onClick={() => onDuplicateEvent(event.id)}
+                      title="Event duplizieren"
+                    >
+                      ⧉
+                    </button>
+                    <button
+                      className="card-action-btn action-delete"
+                      onClick={() => {
+                        if (confirm(`"${event.name}" wirklich löschen?`)) {
+                          onDeleteEvent(event.id)
+                        }
+                      }}
+                      title="Event löschen"
+                    >
+                      ✕
+                    </button>
+                  </div>
                 </div>
               )
             })}

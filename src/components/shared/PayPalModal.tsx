@@ -54,7 +54,7 @@ export function PayPalModal({ personName, amount, paypalUsername, onClose }: Pay
             target="_blank"
             rel="noopener noreferrer"
           >
-            In PayPal oeffnen
+            In PayPal öffnen
           </a>
         </div>
       </div>

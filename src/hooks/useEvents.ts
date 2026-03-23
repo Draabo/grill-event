@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { GrillEvent, Person, GrillItem, OrderEntry, PersonBilling, SavedTemplates } from '../types'
+import { GrillEvent, EventStatus, Person, GrillItem, OrderEntry, PersonBilling, SavedTemplates } from '../types'
 import { loadEvents, saveEvents } from '../utils/storage'
 import { isFirebaseEnabled, saveToFirestore, subscribeToFirestore } from '../utils/firebase'
 import { generateId } from '../utils/format'
@@ -7,13 +7,22 @@ import { generateId } from '../utils/format'
 const DEFAULT_TEMPLATES: SavedTemplates = { persons: [], items: [] }
 
 function migrateEvents(events: GrillEvent[]): GrillEvent[] {
-  return events.map((e) => ({
-    ...e,
-    items: e.items ?? [],
-    orders: e.orders ?? [],
-    billing: e.billing ?? [],
-    persons: e.persons ?? [],
-  }))
+  return events.map((e) => {
+    const migrated: GrillEvent = {
+      ...e,
+      items: e.items ?? [],
+      orders: e.orders ?? [],
+      billing: e.billing ?? [],
+      persons: e.persons ?? [],
+    }
+    // Migrate old boolean registrationOpen to new status field
+    const raw = e as unknown as Record<string, unknown>
+    if ('registrationOpen' in e && !e.status) {
+      migrated.status = raw.registrationOpen === false ? 'registration-closed' : 'open'
+      delete (migrated as unknown as Record<string, unknown>).registrationOpen
+    }
+    return migrated
+  })
 }
 
 export function useEvents() {
@@ -401,10 +410,15 @@ export function useEvents() {
     )
   }, [])
 
-  const toggleRegistration = useCallback((eventId: string) => {
+  const cycleEventStatus = useCallback((eventId: string) => {
+    const nextStatus: Record<EventStatus, EventStatus> = {
+      'open': 'registration-closed',
+      'registration-closed': 'closed',
+      'closed': 'open',
+    }
     setEvents((prev) =>
       prev.map((e) =>
-        e.id === eventId ? { ...e, registrationOpen: !e.registrationOpen } : e
+        e.id === eventId ? { ...e, status: nextStatus[e.status ?? 'open'] } : e
       )
     )
   }, [])
@@ -417,7 +431,7 @@ export function useEvents() {
           .replace(/[^a-zA-Z0-9]/g, '')
           .toUpperCase()
           .slice(0, 8) + '-' + Math.random().toString(36).slice(2, 6).toUpperCase()
-        return { ...e, shareCode: code, registrationOpen: true }
+        return { ...e, shareCode: code, status: 'open' as EventStatus }
       })
     )
   }, [])
@@ -480,7 +494,7 @@ export function useEvents() {
     dismissDebt,
     markPersonPaid,
     autoCharge,
-    toggleRegistration,
+    cycleEventStatus,
     generateShareCode,
     getEventByShareCode,
     reorderItems,

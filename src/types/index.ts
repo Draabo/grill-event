@@ -23,12 +23,14 @@ export interface PersonBilling {
   note?: string
 }
 
+export type EventStatus = 'open' | 'registration-closed' | 'closed'
+
 export interface GrillEvent {
   id: string
   name: string
   date: string
   shareCode?: string
-  registrationOpen?: boolean
+  status?: EventStatus
   persons: Person[]
   items: GrillItem[]
   orders: OrderEntry[]

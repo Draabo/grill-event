@@ -263,6 +263,17 @@ body {
   border-color: var(--accent);
 }
 
+.btn-warning {
+  background: rgba(243, 156, 18, 0.15);
+  color: #f39c12;
+  border: 1px solid #f39c12;
+}
+
+.btn-warning:hover {
+  background: #f39c12;
+  color: #fff;
+}
+
 .btn-danger {
   background: transparent;
   color: var(--danger);

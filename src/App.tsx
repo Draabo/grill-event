@@ -54,7 +54,7 @@ function App() {
     autoCharge,
     generateShareCode,
     getEventByShareCode,
-    toggleRegistration,
+    cycleEventStatus,
     adminPin,
     setAdminPin,
     firebaseReady,
@@ -107,7 +107,7 @@ function App() {
             <h2>Grill Event</h2>
             {!adminPin ? (
               <>
-                <p>Setze einen Admin-Pin um deine Events zu schuetzen.</p>
+                <p>Setze einen Admin-Pin um deine Events zu schützen.</p>
                 <form onSubmit={(e) => {
                   e.preventDefault()
                   if (pinInput.length >= 4) {
@@ -212,6 +212,8 @@ function App() {
             onAddEvent={addEvent}
             onDeleteEvent={deleteEvent}
             onDuplicateEvent={duplicateEvent}
+            onCycleEventStatus={cycleEventStatus}
+            onGenerateShareCode={generateShareCode}
             onShowStatistics={handleShowStatistics}
             onSelectPerson={handleSelectPerson}
             onDismissDebt={dismissDebt}
@@ -245,7 +247,7 @@ function App() {
             onUpdateEventDate={(date) => updateEventDate(selectedEvent.id, date)}
             onAutoCharge={() => autoCharge(selectedEvent.id)}
             onGenerateShareCode={() => generateShareCode(selectedEvent.id)}
-            onToggleRegistration={() => toggleRegistration(selectedEvent.id)}
+            onCycleEventStatus={() => cycleEventStatus(selectedEvent.id)}
             onReorderItems={(from, to) => reorderItems(selectedEvent.id, from, to)}
             onReorderPersons={(from, to) => reorderPersons(selectedEvent.id, from, to)}
             onSelectPerson={handleSelectPerson}
@@ -277,7 +279,7 @@ function App() {
           if (!guestEvent) return (
             <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-secondary)' }}>
               <p>Event nicht gefunden.</p>
-              <p>Pruefe den Link oder frage den Veranstalter.</p>
+              <p>Prüfe den Link oder frage den Veranstalter.</p>
             </div>
           )
           return (
