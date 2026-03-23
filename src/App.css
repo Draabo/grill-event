@@ -36,6 +36,7 @@ body {
   display: flex;
   align-items: center;
   padding: 12px 24px 12px 80px;
+  padding-top: max(12px, env(safe-area-inset-top));
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border);
   -webkit-app-region: drag;
@@ -351,6 +352,7 @@ body {
   justify-content: center;
   min-height: 100vh;
   padding: 20px;
+  padding-top: max(20px, env(safe-area-inset-top));
 }
 
 .admin-gate-card {
@@ -415,6 +417,7 @@ body {
 @media (max-width: 600px) {
   .app-header {
     padding: 10px 16px;
+    padding-top: max(10px, env(safe-area-inset-top));
   }
 
   .btn {
