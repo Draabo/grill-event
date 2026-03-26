@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app'
+import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
 import { getFirestore, doc, setDoc, onSnapshot } from 'firebase/firestore'
 import { EventsState } from '../types'
 
@@ -18,6 +19,20 @@ let db: ReturnType<typeof getFirestore> | null = null
 if (isConfigured) {
   try {
     const app = initializeApp(firebaseConfig)
+
+    const recaptchaKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY
+    if (recaptchaKey) {
+      if (import.meta.env.DEV) {
+        // Debug-Token für lokale Entwicklung — muss in Firebase Console unter App Check → Debug Tokens eingetragen werden
+        ;(self as any).FIREBASE_APPCHECK_DEBUG_TOKEN = true
+      }
+      initializeAppCheck(app, {
+        provider: new ReCaptchaV3Provider(recaptchaKey),
+        isTokenAutoRefreshEnabled: true,
+      })
+      console.log('[Firebase] App Check aktiviert')
+    }
+
     db = getFirestore(app)
     console.log('[Firebase] Initialisiert mit Projekt:', firebaseConfig.projectId)
   } catch (err) {

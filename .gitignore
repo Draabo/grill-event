@@ -22,5 +22,5 @@ release
 *.tsbuildinfo
 
 # Secrets & data
-.env
+.env*
 savestate
