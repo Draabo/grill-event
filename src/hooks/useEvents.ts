@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { GrillEvent, EventStatus, Person, GrillItem, OrderEntry, PersonBilling, SavedTemplates } from '../types'
-import { loadEvents, saveEvents } from '../utils/storage'
 import { isFirebaseEnabled, saveToFirestore, subscribeToFirestore } from '../utils/firebase'
 import { generateId } from '../utils/format'
 
@@ -35,6 +34,7 @@ export function useEvents() {
   const [syncStatus, setSyncStatus] = useState<'off' | 'connected' | 'syncing' | 'error'>('off')
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const lastSavedHash = useRef('')
+  const initialFirestoreReceived = useRef(!isFirebaseEnabled())
 
   const makeHash = (state: { events: GrillEvent[]; templates: SavedTemplates; paypalUsername?: string; adminPin?: string }) => {
     return JSON.stringify({
@@ -45,15 +45,9 @@ export function useEvents() {
     })
   }
 
-  // Initial load
+  // Mark as loaded immediately — Firestore subscription handles data
   useEffect(() => {
-    loadEvents().then((state) => {
-      setEvents(migrateEvents(state.events ?? []))
-      setTemplates(state.templates ?? DEFAULT_TEMPLATES)
-      setPaypalUsername(state.paypalUsername ?? '')
-      setAdminPin(state.adminPin ?? '')
-      setLoaded(true)
-    })
+    setLoaded(true)
   }, [])
 
   // Subscribe to Firestore real-time updates
@@ -62,6 +56,7 @@ export function useEvents() {
     const unsubscribe = subscribeToFirestore(
       (state) => {
         setFirebaseReady(true)
+        initialFirestoreReceived.current = true
         if (!state) {
           setSyncStatus('connected')
           return
@@ -89,7 +84,7 @@ export function useEvents() {
 
   // Save on changes (local + Firestore)
   useEffect(() => {
-    if (!loaded) return
+    if (!loaded || !initialFirestoreReceived.current) return
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
     saveTimeoutRef.current = setTimeout(async () => {
       const state = { events, templates, ...(paypalUsername ? { paypalUsername } : {}), ...(adminPin ? { adminPin } : {}) }
@@ -97,7 +92,6 @@ export function useEvents() {
       // Skip save if nothing changed
       if (hash === lastSavedHash.current) return
       lastSavedHash.current = hash
-      saveEvents(state)
       if (isFirebaseEnabled()) {
         setSyncStatus('syncing')
         try {
