@@ -257,22 +257,12 @@ export function useEvents() {
   }, [])
 
   const addItem = useCallback((eventId: string, name: string) => {
-    setEvents((prev) => {
-      // Find last known price for this item name from other events
-      let lastPrice = 0
-      for (let i = prev.length - 1; i >= 0; i--) {
-        if (prev[i].id === eventId) continue
-        const found = prev[i].items.find((it) => it.name.toLowerCase() === name.toLowerCase())
-        if (found && found.totalPrice > 0) {
-          lastPrice = found.totalPrice
-          break
-        }
-      }
-      const item: GrillItem = { id: generateId(), name, totalPrice: lastPrice }
-      return prev.map((e) =>
+    const item: GrillItem = { id: generateId(), name, totalPrice: 0 }
+    setEvents((prev) =>
+      prev.map((e) =>
         e.id === eventId ? { ...e, items: [...e.items, item] } : e
       )
-    })
+    )
   }, [])
 
   const removeItem = useCallback((eventId: string, itemId: string) => {

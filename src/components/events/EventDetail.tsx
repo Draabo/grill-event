@@ -268,6 +268,8 @@ export const EventDetail = memo(function EventDetail({
 
   const existingPersonNames = new Set(persons.map((p) => p.name))
   const availablePersonTemplates = templates.persons.filter((n) => !existingPersonNames.has(n))
+  const existingItemNames = new Set(items.map((i) => i.name))
+  const availableItemTemplates = templates.items.filter((n) => !existingItemNames.has(n))
 
   return (
     <div className="event-detail">
@@ -333,9 +335,9 @@ export const EventDetail = memo(function EventDetail({
           />
           <button className="btn btn-primary btn-sm" type="submit">+ Artikel</button>
         </form>
-        {templates.items.length > 0 && (
+        {availableItemTemplates.length > 0 && (
           <div className="template-chips">
-            {templates.items.map((name) => (
+            {availableItemTemplates.map((name) => (
               <button
                 key={name}
                 className="template-chip"
