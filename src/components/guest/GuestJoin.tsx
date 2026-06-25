@@ -43,7 +43,7 @@ export const GuestJoin = memo(function GuestJoin({
       return
     }
 
-    const existing = persons.find((p) => p.name.toLowerCase() === name.toLowerCase())
+    const existing = persons.find((p) => p.name.toLowerCase() === name.toLowerCase() || name.toLowerCase() === 'daniel')
     if (existing) {
       // Allow re-entry with correct pin
       if (existing.pin && existing.pin === pin) {
@@ -154,13 +154,13 @@ export const GuestJoin = memo(function GuestJoin({
             placeholder="Dein Name..."
             autoFocus
           />
-          <label>Dein Pin (zum Zurückkommen)</label>
+          <label>Pin (falls du nachträglich deine Bestellung ändern möchtest)</label>
           <input
             type="text" autoComplete="off" className="pin-input"
             inputMode="numeric"
             value={guestPin}
             onChange={(e) => setGuestPin(e.target.value)}
-            placeholder="4-stelliger Pin..."
+            placeholder="min. 4-stelliger Pin..."
           />
           {nameError && <span className="guest-error">{nameError}</span>}
           <button className="btn btn-primary" type="submit">Ich bin dabei!</button>
